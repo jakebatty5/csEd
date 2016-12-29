@@ -4,4 +4,4 @@ See a visual depicting the high demand for computer science professionals along 
 
 A screen shot of the page is below, but to interact with the page and view the complete statistics, please clone this repository and run the index file locally.
 
-![Alt text](/
+![Alt text](/csEd\ screenshot.JPG?raw=true "Preview- Screenshot")
