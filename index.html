@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+	background: ##898cdc;
+	background-image: url("zenbg-1.png"), url("zenbg-2.png");
+	background-repeat: repeat-x, repeat;
+
+}
+
+.chart rect {
+  fill: white;
+  align: center;
+  stroke: black;
+  stroke-width: 2;
+}
+
+.chart rect:hover{
+	fill: #272A8F;
+	opacity: 0.65;
+}
+
+
+div {
+	font-size: 50px;
+	font-family: 'Oswald', sans-serif;
+	font-weight: bold;
+	text-align: center;
+	width: 1800px;
+	position: absolute;
+	top: 100px;
+	color:white;
+}
+
+#background {
+	background-image: url('map.jpg');
+	background-repeat: no-repeat;
+	background-position: middle;
+	height: 870px;
+	width: 1715px;
+	opacity:.5;
+	z-index: -1;
+	position: absolute;
+	left:55px;
+	top:35px;
+}
+
+#button {
+	height: 25px;
+	width: 25px;
+	background-color: red;
+}
+
+#video {
+	position: absolute;
+	left: 18px;
+	top: 1000px;
+	display:inline;
+}
+
+#source {
+	position: absolute;
+	font-size: 14px;
+	top: 940px;
+	right: 0px;	
+	font-family: times;
+}
+
+a {
+	color: white;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  font-weight: 600;
+  text-anchor: middle;
+  font-family: Century Gothic, sans-serif;
+}
+
+#state {
+	font-size: 35px;
+	fill: white;
+}
+
+.axis text {
+  font: 13.5px sans-serif;
+  font-family: 'Oswald', sans-serif;
+  fill: white;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: white;
+  shape-rendering: crispEdges;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  height: 155px;
+  width: 725px;
+  font-size: 35px;
+}
+
+</style>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<body>
+	<div>
+	Computing Jobs, CS Graduate Differential by State
+	</div>
+	<div id="background"></div>
+	<div id="video">
+		<iframe width="1000" height="500" src="https://www.youtube.com/embed/6XvmhE1J9PY" frameborder="0" allowfullscreen></iframe>
+	</div>
+	<div id= "source"><a href="https://code.org/promote"> [Source] </a></div>
+	<svg class="chart"></svg>
+</body>
+<script>
+
+var data = [
+	{name: 'AL', open: 3832, grad: 460, teach: 7},
+	{name: 'AK', open: 610, grad: 18, teach: 8},
+	{name: 'AZ', open: 9813, grad: 484, teach: 14},
+	{name: 'AR', open: 1701, grad: 272, teach: 6},
+	{name: 'CA', open: 68799, grad: 3525, teach: 16},
+	{name: 'CO', open: 13760, grad: 668, teach: 15},
+	{name: 'CT', open: 7356, grad: 271, teach: 21},
+	{name: 'DE', open: 2121, grad: 154, teach: 41},
+	{name: 'FL', open: 22239, grad: 2114, teach: 18},
+	{name: 'GA', open: 20260, grad: 1496, teach: 16},
+	{name: 'HI', open: 1457, grad: 155, teach: 5},
+	{name: 'ID', open: 1185, grad: 278, teach: 14},
+	{name: 'IL', open: 21306, grad: 1471, teach: 15},
+	{name: 'IN', open: 4407, grad: 1237, teach: 11},
+	{name: 'IA', open: 3777, grad: 380, teach: 10},
+	{name: 'KS', open: 2678, grad: 290, teach: 10},
+	{name: 'KY', open: 2531, grad: 382, teach: 12},
+	{name: 'LA', open: 2236, grad: 318, teach: 4},
+	{name: 'ME', open: 1265, grad: 96, teach: 19},
+	{name: 'MD', open: 20310, grad: 2383, teach: 29},
+	{name: 'MA', open: 17257, grad: 1609, teach: 30},
+	{name: 'MI', open: 14805, grad: 1612, teach: 16},
+	{name: 'MN', open: 13527, grad: 796, teach: 13},
+	{name: 'MS', open: 1078, grad: 153, teach: 1},
+	{name: 'MO', open: 9556, grad: 852, teach: 10},
+	{name: 'MT', open: 548, grad: 105, teach: 0},
+	{name: 'NE', open: 2987, grad: 488, teach: 11},
+	{name: 'NV', open: 2550, grad: 127, teach: 6},
+	{name: 'NH', open: 1484, grad: 314, teach: 22},
+	{name: 'NJ', open: 23037, grad: 891, teach: 31},
+	{name: 'NM', open: 1518, grad: 120, teach: 6},
+	{name: 'NY', open: 29805, grad: 3575, teach: 13},
+	{name: 'NC', open: 18273, grad: 1224, teach: 22},
+	{name: 'ND', open: 689, grad: 116, teach: 13},
+	{name: 'OH', open: 15097, grad: 1109, teach: 11},
+	{name: 'OK', open: 1984, grad: 411, teach: 8},
+	{name: 'OR', open: 6493, grad: 387, teach: 10},
+	{name: 'PA', open: 18226, grad: 2820, teach: 18},
+	{name: 'RI', open: 1465, grad: 311, teach: 17},
+	{name: 'SC', open: 4090, grad: 448, teach: 6},
+	{name: 'SD', open: 724, grad: 156, teach: 3},
+	{name: 'TN', open: 6054, grad: 524, teach: 7},
+	{name: 'TX', open: 37432, grad: 2103, teach: 17},
+	{name: 'UT', open: 4464, grad: 1797, teach: 9},
+	{name: 'VT', open: 585, grad: 169, teach: 14},
+	{name: 'VA', open: 36382, grad: 1419, teach: 28},
+	{name: 'WA', open: 22949, grad: 1001, teach: 23},
+	{name: 'WV', open: 1083, grad: 120, teach: 10},
+	{name: 'WI', open: 7362, grad: 890, teach: 15},
+	{name: 'WY', open: 253, grad: 18, teach: 3},
+];
+
+var diff = data.map(function(d) { return d.open-d.grad; });
+
+var margin = {top: 30, right: 35, bottom: 100, left:50},
+    width = 1800- margin.left - margin.right,
+    height = 1000 - margin.top - margin.bottom;
+
+var y = d3.scale.linear()
+    .domain([0, d3.max(diff)])
+    .range([height, 0]);
+
+var x = d3.scale.ordinal()
+    .domain(data.map( function(d) { return d.name; }))
+    .rangeRoundBands([0,width], .1);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+	.scale(y)
+	.orient("left");
+
+var chart = d3.select(".chart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate("+ margin.left + "," + margin.top + ")")
+
+var barWidth = width / data.length;
+
+var animateDuration = 1600;
+
+var bar = chart.selectAll("g")
+    .data(data)
+  .enter().append("g");
+
+var tip = d3.tip()
+	.attr('class','d3-tip')
+	.direction(function(d, i, node){
+		console.log(this.getAttribute("x"));
+		if (this.getAttribute("x") < 360 ) 
+			{return 'e'}
+		else 
+			{return 'n'}
+	})
+	.html(function(d){
+		return "<strong>State:</strong> " + d.name + "<br>"
+		+ "<strong>Open Computing Jobs: "+d.open + "<br>"
+		+ "<strong>Computer Science Graduates: "+d.grad+ "<br>"
+		+ "<strong>% of High Schools Offering CS: "+d.teach;
+	})
+
+
+var bar1 = bar.append("rect")
+    .attr("y", height)
+    .attr("x", function(d) { return x(d.name); })
+    .attr("height", 0)
+    .attr("width", barWidth - 2)
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide);
+
+bar1.call(tip)
+
+var bar2 = bar.append("text")
+    .attr("x", function(d) { return x(d.name)+ barWidth/2 -1; })
+    .attr("y", height-10)
+    .attr("dy", ".75em") 
+    .text(function(d) { return d.open-d.grad; });
+
+chart.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0,"+height+")")
+    .call(xAxis)
+.append("text")
+    .attr("transform", "translate("+width/2+", 70)")
+    .text("State by Abreviation")
+    .attr("id", "state");
+
+chart.append("g")
+	.attr("class", "y axis")
+	.call(yAxis);
+
+bar1.transition()
+	.attr("height", function(d) { return height - y(d.open-d.grad); })
+	.attr("y", function(d) { return y(d.open-d.grad); })
+	.duration(animateDuration);
+
+bar2.transition()
+	.attr("height", function(d) { return height - y(d.open-d.grad); })
+	.attr("y", function(d) { return y(d.open-d.grad)-10; })
+	.duration(animateDuration);
+
+</script>
+
+</html>
